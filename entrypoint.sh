@@ -1,9 +1,9 @@
 #!/bin/bash
 set -e
 
-# Ensure SSH key permissions are correct
-if [ -d /root/.ssh ]; then
-  chmod 700 /root/.ssh
+# Ensure SSH key permissions are correct (skip if read-only mount)
+if [ -d /root/.ssh ] && [ -w /root/.ssh ]; then
+  chmod 700 /root/.ssh 2>/dev/null || true
   chmod 600 /root/.ssh/id_* 2>/dev/null || true
   chmod 644 /root/.ssh/*.pub 2>/dev/null || true
   chmod 644 /root/.ssh/known_hosts 2>/dev/null || true
