@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>unraid-rsync-backup</Name>
+  <Repository>ghcr.io/daelsc/unraid-rsync-backup:latest</Repository>
+  <Registry>ghcr.io</Registry>
+  <Network>host</Network>
+  <Privileged>false</Privileged>
+  <Support>https://github.com/daelsc/unraid-rsync-backup/issues</Support>
+  <Overview>Rsync backup from Unraid shares to a remote server over SSH. Runs on a configurable cron schedule. Perfect for offsite backups to another Unraid server or any Linux host.</Overview>
+  <Category>Backup:</Category>
+  <WebUI/>
+  <TemplateURL>https://raw.githubusercontent.com/daelsc/unraid-rsync-backup/main/unraid-template.xml</TemplateURL>
+  <Icon>https://raw.githubusercontent.com/linuxserver/docker-templates/master/linuxserver.io/img/rsync-logo.png</Icon>
+  <ExtraParams/>
+  <PostArgs/>
+  <DonateText/>
+  <DonateLink/>
+  <DonateImg/>
+  <BaseImage>alpine:3.19</BaseImage>
+  <Requires>SSH key access to destination server. Run: ssh-keygen on Unraid, then copy /root/.ssh/id_rsa.pub to destination server's /root/.ssh/authorized_keys</Requires>
+  <Shell>bash</Shell>
+
+  <Config Name="Source Path" Target="/mnt/user" Default="/mnt/user" Mode="ro" Description="Source path to backup (mounted read-only)" Type="Path" Display="always" Required="true" Mask="false">/mnt/user</Config>
+
+  <Config Name="SSH Keys" Target="/root/.ssh" Default="/root/.ssh" Mode="ro" Description="Path to SSH keys for remote server access" Type="Path" Display="always" Required="true" Mask="false">/root/.ssh</Config>
+
+  <Config Name="Logs" Target="/var/log/rsync-backup" Default="/mnt/user/appdata/rsync-backup/logs" Mode="rw" Description="Log file storage location" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/rsync-backup/logs</Config>
+
+  <Config Name="Destination Host" Target="DST_HOST" Default="" Mode="" Description="Remote server IP or hostname (e.g., 192.168.1.100 or backup.local)" Type="Variable" Display="always" Required="true" Mask="false"></Config>
+
+  <Config Name="Destination Path" Target="DST_BASE" Default="/mnt/user/backup" Mode="" Description="Remote path where backups will be stored" Type="Variable" Display="always" Required="true" Mask="false">/mnt/user/backup</Config>
+
+  <Config Name="Cron Schedule" Target="CRON_SCHEDULE" Default="0 0 * * *" Mode="" Description="When to run backups (cron format). Default: midnight daily. Examples: '0 */6 * * *' (every 6 hours), '0 2 * * 0' (Sundays at 2am)" Type="Variable" Display="always" Required="false" Mask="false">0 0 * * *</Config>
+
+  <Config Name="Exclude Shares" Target="EXCLUDE_SHARES" Default="" Mode="" Description="Comma-separated list of shares to skip (e.g., 'appdata,domains,isos')" Type="Variable" Display="always" Required="false" Mask="false"></Config>
+
+  <Config Name="Exclude Paths" Target="EXCLUDE_PATHS" Default="" Mode="" Description="Comma-separated rsync patterns to exclude within shares (e.g., 'cache/,*.tmp,node_modules/')" Type="Variable" Display="advanced" Required="false" Mask="false"></Config>
+
+  <Config Name="Run on Start" Target="RUN_ON_START" Default="0" Mode="" Description="Set to 1 to run a sync immediately when container starts" Type="Variable" Display="advanced" Required="false" Mask="false">0</Config>
+
+  <Config Name="Timezone" Target="TZ" Default="America/New_York" Mode="" Description="Container timezone for log timestamps" Type="Variable" Display="advanced" Required="false" Mask="false">America/New_York</Config>
+</Container>
