@@ -19,14 +19,17 @@ IFS="," read -ra EXCLUDES <<< "${EXCLUDE_SHARES:-}"
 IFS="," read -ra EXCLUDE_PATHS <<< "${EXCLUDE_PATHS:-}"
 
 RSYNC_OPTS=(
-  -aHAXx
+  -aHx
   --numeric-ids
   --human-readable
   --info=progress2,stats2
+  --compress
+  --compress-level=3
   --partial
   --partial-dir=.rsync-partial
   --delete
   --delete-delay
+  --timeout=300
 )
 
 DRYRUN="${DRYRUN:-0}"
@@ -153,7 +156,7 @@ for s in "${SHARES[@]}"; do
   # Capture rsync output to parse stats
   RSYNC_OUTPUT=$(mktemp)
   if rsync "${RSYNC_OPTS[@]}" \
-    -e "ssh -o Compression=no -o ServerAliveInterval=30 -o ServerAliveCountMax=4" \
+    -e "ssh -o Compression=no -c aes128-gcm@openssh.com -o ServerAliveInterval=30 -o ServerAliveCountMax=4" \
     "${SRC_BASE}/${s}/" "root@${DST_HOST}:${DST_BASE}/${s}/" 2>&1 | tee "$RSYNC_OUTPUT"; then
     SHARE_STATUS[$s]="OK"
     SUCCESS=$((SUCCESS + 1))
