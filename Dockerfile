@@ -4,7 +4,8 @@ RUN apk add --no-cache \
     bash \
     rsync \
     openssh-client \
-    tzdata
+    tzdata \
+    util-linux
 
 # Set timezone (configurable via TZ env var)
 ENV TZ=America/New_York

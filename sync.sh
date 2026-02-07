@@ -1,6 +1,14 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Prevent overlapping runs with a lock file
+LOCKFILE="/var/run/rsync-backup.lock"
+exec 200>"$LOCKFILE"
+if ! flock -n 200; then
+  echo "$(date -Is) Another sync is already running (lock: $LOCKFILE). Skipping."
+  exit 0
+fi
+
 # Configuration via environment variables (with defaults)
 SRC_BASE="${SRC_BASE:-/mnt/user}"
 DST_HOST="${DST_HOST:?ERROR: DST_HOST environment variable is required}"
