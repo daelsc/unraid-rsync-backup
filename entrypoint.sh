@@ -10,8 +10,9 @@ if [ -d /root/.ssh ] && [ -w /root/.ssh ]; then
 fi
 
 # Generate crontab from environment variable
+# Output to both Docker logs (/proc/1/fd/1) and log file (handled by sync.sh)
 CRON_SCHEDULE="${CRON_SCHEDULE:-0 0 * * *}"
-echo "${CRON_SCHEDULE} /usr/local/bin/sync.sh >> /var/log/rsync-backup/cron.log 2>&1" > /etc/crontabs/root
+echo "${CRON_SCHEDULE} /usr/local/bin/sync.sh > /proc/1/fd/1 2>&1" > /etc/crontabs/root
 
 echo "=========================================="
 echo "Unraid Rsync Backup container started"
