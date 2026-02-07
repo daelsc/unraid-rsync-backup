@@ -61,8 +61,8 @@ if ! ssh -o BatchMode=yes -o ConnectTimeout=10 "root@${DST_HOST}" 'true' >/dev/n
   exit 1
 fi
 
-# Build share list from top-level dirs
-mapfile -t SHARES < <(find "$SRC_BASE" -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | sort)
+# Build share list from top-level dirs (BusyBox compatible)
+mapfile -t SHARES < <(find "$SRC_BASE" -mindepth 1 -maxdepth 1 -type d | xargs -n1 basename | sort)
 
 # Apply share excludes
 if [[ ${#EXCLUDES[@]} -gt 0 && -n "${EXCLUDES[0]}" ]]; then
