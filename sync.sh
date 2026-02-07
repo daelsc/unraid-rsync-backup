@@ -23,8 +23,7 @@ RSYNC_OPTS=(
   --numeric-ids
   --human-readable
   --info=progress2,stats2
-  --compress
-  --compress-level=3
+  --whole-file
   --partial
   --partial-dir=.rsync-partial
   --delete
