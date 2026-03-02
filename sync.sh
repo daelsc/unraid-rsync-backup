@@ -103,6 +103,19 @@ if [[ ${#EXCLUDES[@]} -gt 0 && -n "${EXCLUDES[0]}" ]]; then
   SHARES=("${NEW[@]}")
 fi
 
+# Move Media to end (sync smaller shares first)
+NEW=()
+DEFERRED=""
+for s in "${SHARES[@]}"; do
+  if [[ "$s" == "Media" ]]; then
+    DEFERRED="$s"
+  else
+    NEW+=("$s")
+  fi
+done
+[[ -n "$DEFERRED" ]] && NEW+=("$DEFERRED")
+SHARES=("${NEW[@]}")
+
 TOTAL_SHARES=${#SHARES[@]}
 echo "Shares to sync: ${TOTAL_SHARES}"
 printf '  • %s\n' "${SHARES[@]}"
